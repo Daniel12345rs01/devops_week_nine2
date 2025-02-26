@@ -42,8 +42,11 @@ jobs:
       - name: Debug Token
         run: echo "GH_PAT is set"
     
+      - name: Debug Token
+        run: echo "GH_PAT is available"
+    
       - name: Create release notes
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1.12.0
         with:
           tag: ${{ steps.server-app.outputs.version }}
           generateReleaseNotes: true

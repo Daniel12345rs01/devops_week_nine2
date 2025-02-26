@@ -1,6 +1,6 @@
 services:
   web:  
-    image: ghcr.io/Daniel12345rs01/devops_week_nine:staging
+    image: ghcr.io/daniel12345rs01/devops_week_nine:staging
     ports:
       - "8000:8000"
       

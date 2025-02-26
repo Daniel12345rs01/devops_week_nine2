@@ -47,5 +47,6 @@ jobs:
           body: |
             This release includes the following container image:
             http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
-          opts.auth: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GH_PAT }}
+
 

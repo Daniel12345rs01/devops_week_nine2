@@ -13,12 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Application Version
-        id: server-app
-        uses: paulhatch/semantic-version@v5.4.0
-        with:
-          bump_each_commit: true
-
       # Log in to GitHub Container Registry (GHCR)
       - name: Log in to GHCR
         uses: docker/login-action@v2
@@ -27,30 +21,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
-      # Build and push Docker image
-      - name: Build and Push Docker image
+      # Pull the latest staging image
+      - name: Pull Docker image from GHCR (staging)
         run: |
           REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          docker pull ghcr.io/$REPO_NAME:staging
 
-          docker build \
-            -t ghcr.io/$REPO_NAME:production \
-            -t ghcr.io/$REPO_NAME:${{ steps.server-app.outputs.version }} \
-            -f DevOpsWebApplication/Dockerfile \
-            .
-          docker push ghcr.io/$REPO_NAME --all-tags
-      # Create release notes
-      - name: Create release notes
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.server-app.outputs.version }}
-          generateReleaseNotes: true
-          body: |
-            This release includes the following container image:
-            http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
-          token: ${{ secrets.GHCR_PAT }}
-      
+      # Tag and push Docker image as production
+      - name: Tag and Push Docker image as production
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          docker tag ghcr.io/$REPO_NAME:staging ghcr.io/$REPO_NAME:production
+          docker push ghcr.io/$REPO_NAME:production
+
       # Upload file to production server    
-      - name: Deliver Docker Compose file to staging
+      - name: Deliver Docker Compose file to production
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ vars.PRODUCTION_SERVER_IP }}
@@ -59,7 +44,7 @@ jobs:
           source: "docker-compose.yaml"
           target: dowa/
 
-      - name: Run Docker Compose on staging server
+      - name: Run Docker Compose on production server
         uses: appleboy/ssh-action@v1.2.1
         with:
           host: ${{ vars.PRODUCTION_SERVER_IP }}

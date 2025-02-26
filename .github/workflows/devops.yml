@@ -39,8 +39,11 @@ jobs:
             .
           docker push ghcr.io/$REPO_NAME --all-tags
       # Create release notes
+      - name: Debug Token
+        run: echo "GH_PAT is set"
+    
       - name: Create release notes
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.10.0
         with:
           tag: ${{ steps.server-app.outputs.version }}
           generateReleaseNotes: true

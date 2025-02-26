@@ -48,6 +48,16 @@ jobs:
             This release includes the following container image:
             http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
           token: ${{ secrets.GHCR_PAT }}
+          
+      - name: Create dowa directory on staging server
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.STAGING_SERVER_IP }}
+          username: ${{ secrets.STAGING_SERVER_USERNAME }}
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
+          script: |
+            mkdir -p dowa
+  
       
       # Upload file to staging server    
       - name: Deliver Docker Compose file to staging

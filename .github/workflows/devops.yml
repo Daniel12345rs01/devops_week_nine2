@@ -1,0 +1,50 @@
+name: DevOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Application Version
+        id: server-app
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          bump_each_commit: true
+
+      # Log in to GitHub Container Registry (GHCR)
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      # Build and push Docker image
+      - name: Build and Push Docker image
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+
+          docker build \
+            -t ghcr.io/$REPO_NAME:staging \
+            -t ghcr.io/$REPO_NAME:${{ steps.server-app.outputs.version }} \
+            -f DevOpsWebApplication/Dockerfile \
+            .
+          docker push ghcr.io/$REPO_NAME --all-tags
+      # Create release notes
+      - name: Create release notes
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.server-app.outputs.version }}
+          generateReleaseNotes: true
+          body: |
+            This release includes the following container image:
+            http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
+          opts.auth: ${{ secrets.GH_PAT }}
+

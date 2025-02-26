@@ -42,8 +42,14 @@ jobs:
       - name: Debug Token
         run: echo "GH_PAT is set"
     
-      - name: Debug Token
-        run: echo "GH_PAT is available"
+      - name: Debug Secrets
+        run: |
+          if [ -z "${{ secrets.GH_PAT }}" ]; then
+            echo "GH_PAT is missing!"
+            exit 1
+          else
+            echo "GH_PAT is available"
+          fi
     
       - name: Create release notes
         uses: ncipollo/release-action@v1.12.0

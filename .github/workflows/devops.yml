@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Application Version
         id: server-app
         uses: paulhatch/semantic-version@v5.4.0
@@ -39,26 +39,12 @@ jobs:
             .
           docker push ghcr.io/$REPO_NAME --all-tags
       # Create release notes
-      - name: Debug Token
-        run: echo "GH_PAT is set"
-    
-      - name: Debug Secrets
-        run: |
-          if [ -z "${{ secrets.GHCR_PAT }}" ]; then
-            echo "GH_PAT is missing!"
-            exit 1
-          else
-            echo "GH_PAT is available"
-          fi
-    
       - name: Create release notes
-        uses: ncipollo/release-action@v1.12.0
+        uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.server-app.outputs.version }}
           generateReleaseNotes: true
           body: |
             This release includes the following container image:
             http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
-          token: ${{ secrets.GHCR_PAT }}
-
-
+          opts.auth: ${{ secrets.GHCR_PAT }}

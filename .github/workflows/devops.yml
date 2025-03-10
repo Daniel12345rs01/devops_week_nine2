@@ -24,7 +24,7 @@ jobs:
           major_pattern: "BREAKING CHANGE"
           minor_pattern: "feat:"
           patch_pattern: "fix:|chore:"
-          format: "${major}.${minor}.${patch}"
+          version_format: "${major}.${minor}.${patch}"
           bump_each_commit: false  # Undgår bumping pr. commit
           enable_prerelease_mode: false
 

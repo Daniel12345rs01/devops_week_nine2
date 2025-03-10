@@ -29,32 +29,6 @@ jobs:
           bump_each_commit: true
           enable_prerelease_mode: false
 
-      # Check if version tag already exists
-      - name: Check if tag exists
-        id: check_tag_exists
-        run: |
-          git fetch --tags
-          
-          # Get latest tag
-          LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
-          
-          # Extract major, minor, and patch numbers
-          MAJOR=$(echo "$LATEST_TAG" | cut -d. -f1)
-          MINOR=$(echo "$LATEST_TAG" | cut -d. -f2)
-          PATCH=$(echo "$LATEST_TAG" | cut -d. -f3)
-          
-          # If tag exists, increment the patch number
-          if [ "$LATEST_TAG" = "${{ steps.server-app.outputs.version }}" ]; then
-            echo "Tag $LATEST_TAG already exists, incrementing patch version"
-            PATCH=$((PATCH + 1))
-          fi
-          
-          NEW_TAG="$MAJOR.$MINOR.$PATCH"
-          
-          echo "New Tag: $NEW_TAG"
-          echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
-
-
       # Log in to GitHub Container Registry (GHCR)
       - name: Log in to GHCR
         uses: docker/login-action@v2

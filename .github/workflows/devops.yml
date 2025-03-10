@@ -49,7 +49,7 @@ jobs:
             .
           docker push ghcr.io/$REPO_NAME --all-tags
       # Create release notes
-      - name: Create release notes
+      - name: Create release notes 
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.server-app.outputs.version }}

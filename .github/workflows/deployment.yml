@@ -44,7 +44,7 @@ jobs:
           username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
           script: |
-            docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
+            docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
 
       - name: Run Docker Compose on production server
         uses: appleboy/ssh-action@v1.2.1

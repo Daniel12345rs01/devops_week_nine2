@@ -25,7 +25,7 @@ jobs:
           minor_pattern: "minor:"
           bump_each_commit_patch_pattern: "fix:"
           version_format: "${major}.${minor}.${patch}"
-          bump_each_commit: true
+          bump_each_commit: false
           enable_prerelease_mode: false
 
       # Log in to GitHub Container Registry (GHCR)

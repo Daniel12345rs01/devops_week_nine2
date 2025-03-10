@@ -44,8 +44,23 @@ jobs:
           username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
           script: |
+            # Navigate to the dowa directory
             cd dowa
-            docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
+            
+            # Print out the directory contents to confirm the files are present
+            echo "Listing contents of dowa directory:"
+            ls -l
+            
+            # Check if both docker-compose files are present
+            if [ -f docker-compose.yaml ] && [ -f docker-compose.prod.yaml ]; then
+              echo "Docker Compose files found, starting services..."
+              # Run Docker Compose with both configuration files
+              docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
+            else
+              echo "Error: Docker Compose files are missing!"
+              exit 1
+            fi
+
 
       - name: Run Docker Compose on production server
         uses: appleboy/ssh-action@v1.2.1

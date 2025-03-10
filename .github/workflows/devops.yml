@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - with:
+          fetch-depth: 0
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -17,7 +19,15 @@ jobs:
         id: server-app
         uses: paulhatch/semantic-version@v5.4.0
         with:
-          bump_each_commit: true
+          branch: main
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE"
+          minor_pattern: "feat:"
+          patch_pattern: "fix:|chore:"
+          format: "${major}.${minor}.${patch}"
+          bump_each_commit: false  # Undgår bumping pr. commit
+          enable_prerelease_mode: false
+
 
       # Log in to GitHub Container Registry (GHCR)
       - name: Log in to GHCR
@@ -48,7 +58,7 @@ jobs:
             This release includes the following container image:
             http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
           token: ${{ secrets.GHCR_PAT }}
-          
+      
       # Upload file to staging server    
       - name: Deliver Docker Compose file to staging
         uses: appleboy/scp-action@v0.1.7
@@ -56,7 +66,7 @@ jobs:
           host: ${{ vars.STAGING_SERVER_IP }}
           username: ${{ vars.STAGING_SERVER_USERNAME }}
           key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
-          source: "docker-compose.yaml"
+          source: "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d"
           target: dowa/
 
       - name: Run Docker Compose on staging server

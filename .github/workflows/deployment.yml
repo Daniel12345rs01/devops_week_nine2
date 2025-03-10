@@ -43,7 +43,7 @@ jobs:
           host: ${{ vars.PRODUCTION_SERVER_IP }}
           username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          source: "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d"
+          source: "docker-compose.yaml -f docker-compose.yaml -f docker-compose.prod.yaml up -d"
           target: dowa/
 
       - name: Run Docker Compose on production server

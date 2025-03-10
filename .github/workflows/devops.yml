@@ -20,10 +20,9 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           branch: main
-          tag_prefix: "v"
+          tag_prefix: ""
           major_pattern: "BREAKING CHANGE"
           minor_pattern: "feat:"
-          patch_pattern: "fix:|chore:"
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: false  # Undgår bumping pr. commit
           enable_prerelease_mode: false

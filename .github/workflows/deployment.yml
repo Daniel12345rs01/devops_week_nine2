@@ -36,7 +36,7 @@ jobs:
           docker tag ghcr.io/$REPO_NAME:staging ghcr.io/$REPO_NAME:production
           docker push ghcr.io/$REPO_NAME:production
 
-      # Upload file to production server    
+      # Upload files to production server    
       - name: Deliver Docker Compose file to production
         uses: appleboy/ssh-action@v1.2.1
         with:
@@ -44,6 +44,7 @@ jobs:
           username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
           script: |
+            cd dowa
             docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
 
       - name: Run Docker Compose on production server

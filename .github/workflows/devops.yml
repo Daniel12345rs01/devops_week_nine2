@@ -20,10 +20,10 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           branch: main
-          tag_prefix: ""   # Ændr til "" hvis dine eksisterende tags er f.eks. "0.0.1"
+          tag_prefix: ""   # Hvis dine eksisterende tags fx er "0.0.1"
           major_pattern: "major:"
           minor_pattern: "minor:"
-          # patch_pattern-feltet er fjernet
+          bump_each_commit_patch_pattern: "fix:"  # Kun commits med "fix:" trigger et patch bump
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: false
           enable_prerelease_mode: false

@@ -59,7 +59,7 @@ jobs:
             http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
           token: ${{ secrets.GHCR_PAT }}
       
-      # Upload docker-compose.yaml to staging server
+      # Upload docker-compose.yaml to staging server 
       - name: Deliver docker-compose.yaml to staging
         uses: appleboy/scp-action@v0.1.7
         with:

@@ -15,17 +15,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Generate version from commits and tags
       - name: Application Version
         id: server-app
         uses: paulhatch/semantic-version@v5.4.0
         with:
           branch: main
-          tag_prefix: ""
+          tag_prefix: "v"  # Set tag prefix if your tags start with "v"
           major_pattern: "major:"
           minor_pattern: "minor:"
-          bump_each_commit_patch_pattern: "fix:"
+          bump_each_commit_patch_pattern: "fix:"  # Increment patch if no version-related commit message is found
           version_format: "${major}.${minor}.${patch}"
-          bump_each_commit: false 
+          bump_each_commit: true  # Automatically bump on commits
           enable_prerelease_mode: false
 
       # Log in to GitHub Container Registry (GHCR)

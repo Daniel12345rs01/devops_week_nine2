@@ -1,0 +1,3 @@
+services:
+  web:
+    image: ghcr.io/daniel12345rs01/devops_week_nine:production

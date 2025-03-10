@@ -38,13 +38,13 @@ jobs:
 
       # Upload file to production server    
       - name: Deliver Docker Compose file to production
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/ssh-action@v1.2.1
         with:
           host: ${{ vars.PRODUCTION_SERVER_IP }}
           username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          source: "docker-compose.yaml -f docker-compose.yaml -f docker-compose.prod.yaml up -d"
-          target: dowa/
+          script: |
+            docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
 
       - name: Run Docker Compose on production server
         uses: appleboy/ssh-action@v1.2.1

@@ -25,7 +25,7 @@ jobs:
           minor_pattern: "minor:"
           bump_each_commit_patch_pattern: "fix:"  # Kun commits med "fix:" trigger et patch bump
           version_format: "${major}.${minor}.${patch}"
-          bump_each_commit: false
+          bump_each_commit: true
           enable_prerelease_mode: false
 
 
@@ -59,16 +59,24 @@ jobs:
             http://ghcr.io/${{ github.repository }}:${{ steps.server-app.outputs.version }}
           token: ${{ secrets.GHCR_PAT }}
       
-      # Upload files to staging server
-      - name: Deliver Docker Compose files to staging
+      # Upload docker-compose.yaml to staging server
+      - name: Deliver docker-compose.yaml to staging
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ vars.STAGING_SERVER_IP }}
           username: ${{ vars.STAGING_SERVER_USERNAME }}
           key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
-          source: |
-            docker-compose.yaml
-            docker-compose.prod.yaml
+          source: "docker-compose.yaml"
+          target: dowa/
+
+      # Upload docker-compose.prod.yaml to staging server
+      - name: Deliver docker-compose.prod.yaml to staging
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.STAGING_SERVER_IP }}
+          username: ${{ vars.STAGING_SERVER_USERNAME }}
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
+          source: "docker-compose.prod.yaml"
           target: dowa/
 
       - name: Run Docker Compose on staging server

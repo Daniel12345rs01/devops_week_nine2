@@ -29,6 +29,19 @@ jobs:
           bump_each_commit: true
           enable_prerelease_mode: false
 
+      # Check if version tag already exists
+      - name: Check if tag exists
+        id: check_tag_exists
+        run: |
+          TAG="${{ steps.server-app.outputs.version }}"
+          git fetch --tags
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, incrementing patch version"
+            TAG="${{ steps.server-app.outputs.version }}.1"
+          fi
+          echo "New Tag: $TAG"
+          echo "tag_name=$TAG" >> $GITHUB_ENV
+
       # Log in to GitHub Container Registry (GHCR)
       - name: Log in to GHCR
         uses: docker/login-action@v2
